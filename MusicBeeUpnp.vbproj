@@ -44,7 +44,7 @@
     <RootNamespace>MusicBeePlugin</RootNamespace>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyName>mb_Upnp</AssemblyName>
+    <AssemblyName>mb_UpnpReloaded</AssemblyName>
   </PropertyGroup>
   <PropertyGroup>
     <OptionStrict>On</OptionStrict>
