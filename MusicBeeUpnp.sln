@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30330.147
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "MusicBeeUpnp", "MusicBeeUpnp.vbproj", "{6B461FD9-06C0-41C5-A9F5-6488639746B7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D88C6EAF-70C7-4FCB-BF9A-238F34C4EDC9}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6B461FD9-06C0-41C5-A9F5-6488639746B7}.Debug|x86.ActiveCfg = Debug|x86
+		{6B461FD9-06C0-41C5-A9F5-6488639746B7}.Debug|x86.Build.0 = Debug|x86
+		{6B461FD9-06C0-41C5-A9F5-6488639746B7}.Release|x86.ActiveCfg = Release|x86
+		{6B461FD9-06C0-41C5-A9F5-6488639746B7}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1C098231-3ABC-4FEF-B37F-02A7CD1A6969}
+	EndGlobalSection
+EndGlobal
