@@ -85,19 +85,6 @@ Public Class Plugin
     Public Sub ReceiveNotification(ByVal sourceFileUrl As String, ByVal type As NotificationType)
         Select Case type
             Case NotificationType.PluginStartup
-                Dim value As Object
-                mbApiInterface.Setting_GetValue(SettingId.IgnoreNamePrefixes, value)
-                ignoreNamePrefixes = DirectCast(value, String())
-                mbApiInterface.Setting_GetValue(SettingId.IgnoreNameChars, value)
-                ignoreNameChars = DirectCast(value, String)
-                mbApiInterface.Setting_GetValue(SettingId.PlayCountTriggerPercent, value)
-                playCountTriggerPercent = DirectCast(value, Integer) / 100
-                mbApiInterface.Setting_GetValue(SettingId.PlayCountTriggerSeconds, value)
-                playCountTriggerSeconds = DirectCast(value, Integer)
-                mbApiInterface.Setting_GetValue(SettingId.SkipCountTriggerPercent, value)
-                skipCountTriggerPercent = DirectCast(value, Integer) / 100
-                mbApiInterface.Setting_GetValue(SettingId.SkipCountTriggerSeconds, value)
-                skipCountTriggerSeconds = DirectCast(value, Integer)
                 Try
                     startTimeTicks = DateTime.UtcNow.Ticks
                     LogInformation("Initialise", DateTime.Now.ToString())

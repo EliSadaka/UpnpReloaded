@@ -928,11 +928,7 @@ skipFile:
                     forcedCodec = streamingProfile.TranscodeCodec
                 End If
                 If forcedCodec = FileCodec.Pcm Then
-                    If Not musicBeePlayToMode Then
-                        forcedCodec = FileCodec.AnyPcm
-                    Else
-                        forcedCodec = If(Not IsCodecSupported(FileCodec.Wave) OrElse (IsCodecSupported(FileCodec.Pcm) AndAlso tags(MetaDataIndex.Size) = "0"), FileCodec.Pcm, FileCodec.Wave)
-                    End If
+                    forcedCodec = If(Not IsCodecSupported(FileCodec.Wave) OrElse (IsCodecSupported(FileCodec.Pcm) AndAlso tags(MetaDataIndex.Size) = "0"), FileCodec.Pcm, FileCodec.Wave)
                 End If
                 'If musicBeePlayToMode Then
                 '    LogInformation("Item", "transcode=" & forceEncode & " to=" & forcedCodec.ToString() & ",rgmode=" & mbApiInterface.Player_GetReplayGainMode().ToString() & ",gain=" & (fileHasTrackGain OrElse fileHasAlbumGain) & ",eq/dsp=" & mbSoundEffectsActive & ",samplerate=" & sampleRate & ",dev min=" & streamingProfile.MinimumSampleRate & ",dev max=" & streamingProfile.MaximumSampleRate & ",chans=" & channelCount & ",dev stereo=" & streamingProfile.StereoOnly & ",codec=" & sourceFileCodec.ToString & ",sup=" & IsCodecSupported(sourceFileCodec) & ",bw=" & Settings.BandwidthConstrained)
@@ -1111,7 +1107,7 @@ skipFile:
                     End If
                     Dim encodeSampleRate As Integer = If(streamingProfile.TranscodeSampleRate = -1, sampleRate, streamingProfile.TranscodeSampleRate)
                     For Each encoder As AudioEncoder In encodeSettings.Audio.Encoders
-                        If (encoder.Codec = forcedCodec AndAlso (forcedCodec <> sourceFileCodec OrElse forceEncode)) OrElse ((forcedCodec = FileCodec.Unknown OrElse forcedCodec = FileCodec.AnyPcm) AndAlso (((encoder.Codec = FileCodec.Pcm OrElse encoder.Codec = FileCodec.Wave) AndAlso Not Settings.BandwidthConstrained))) Then
+                        If (encoder.Codec = forcedCodec AndAlso (forcedCodec <> sourceFileCodec OrElse forceEncode)) OrElse ((forcedCodec = FileCodec.Unknown) AndAlso (((encoder.Codec = FileCodec.Pcm OrElse encoder.Codec = FileCodec.Wave) AndAlso Not Settings.BandwidthConstrained))) Then
                             writer.WriteStartElement("res")
                             writer.WriteAttributeString("protocolInfo", String.Format("http-get:*:{0}:{1}", GetMime(encoder.Codec, streamingProfile.TranscodeBitDepth), GetEncodeFeature(encoder.Codec, (duration.Ticks <= 0))))
                             Dim isPcmData As Boolean = (encoder.Codec = FileCodec.Pcm OrElse encoder.Codec = FileCodec.Wave)
