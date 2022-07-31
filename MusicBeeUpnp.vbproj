@@ -51,7 +51,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Interop.UPNPLib">
-      <HintPath>bin\Interop.UPNPLib.dll</HintPath>
+      <HintPath>.\Interop.UPNPLib.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
