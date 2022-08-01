@@ -30,14 +30,14 @@ Public Class Plugin
     Public Function Initialise(ByVal apiInterfacePtr As IntPtr) As PluginInfo
         CopyMemory(mbApiInterface, apiInterfacePtr, Marshal.SizeOf(mbApiInterface))
         about.PluginInfoVersion = PluginInfoVersion
-        about.Name = "MusicBee UPnP Reloaded"
+        about.Name = "UPnP Reloaded"
         about.Description = "UPnP/DLNA server and control point"
-        about.Author = "Steven Mayall"
+        about.Author = "Steven Mayall, forked by Eli Sadaka"
         about.TargetApplication = ""
         about.Type = PluginType.Upnp
         about.VersionMajor = 1
-        about.VersionMinor = 0
-        about.Revision = 1
+        about.VersionMinor = 1
+        about.Revision = 2
         about.MinInterfaceVersion = MinInterfaceVersion
         about.MinApiRevision = MinApiRevision
         about.ReceiveNotifications = (ReceiveNotificationFlags.TagEvents Or ReceiveNotificationFlags.PlayerEvents)

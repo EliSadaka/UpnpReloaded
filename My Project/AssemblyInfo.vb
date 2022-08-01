@@ -7,11 +7,11 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("MusicBee Upnp/DNLA server")>
+<Assembly: AssemblyTitle("UpnpReloaded")>
 <Assembly: AssemblyDescription("")>
-<Assembly: AssemblyCompany("Steven Mayall")>
+<Assembly: AssemblyCompany("Steven Mayall, forked by Eli Sadaka")>
 <Assembly: AssemblyProduct("")>
-<Assembly: AssemblyCopyright("Copyright ©Steven Mayall  2014")>
+<Assembly: AssemblyCopyright("Copyright © 2014-2022")>
 <Assembly: AssemblyTrademark("")>
 
 <Assembly: ComVisible(False)>
@@ -30,5 +30,5 @@ Imports System.Runtime.InteropServices
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("1.0.0.0")>
-<Assembly: AssemblyFileVersion("1.0.0.0")>
+<Assembly: AssemblyVersion("1.1.0.0")>
+<Assembly: AssemblyFileVersion("1.1.0.0")>
