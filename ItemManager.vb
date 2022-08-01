@@ -677,6 +677,8 @@ skipFile:
                             Dim files As List(Of String()) = folder.ChildFiles
                             If Not node.IncludeAllTracks OrElse index > 0 Then
                                 files.Sort(New AlbumFileComparer)
+                            ElseIf folder.Name = "[All Tracks]" Then
+                                files.Sort(New YearFileComparer)
                             Else
                                 files.Sort(New TrackNameFileComparer)
                             End If
@@ -1457,6 +1459,70 @@ skipFile:
                 End If
             End Function
         End Class  ' AlbumFileComparer
+
+        Private NotInheritable Class YearFileComparer
+            Inherits Comparer(Of String())
+            Public Overrides Function Compare(tags1() As String, tags2() As String) As Integer
+                Dim result As Integer
+                result = String.Compare(tags1(MetaDataIndex.Year), tags2(MetaDataIndex.Year), StringComparison.Ordinal)
+                If result <> 0 Then
+                    Return result
+                Else
+                    result = String.Compare(tags1(MetaDataIndex.Album), tags2(MetaDataIndex.Album), StringComparison.OrdinalIgnoreCase)
+                    If result <> 0 Then
+                        Return result
+                    Else
+                        Dim discNo1 As Integer
+                            If Not Integer.TryParse(tags1(MetaDataIndex.DiscNo), discNo1) Then
+                                discNo1 = -1
+                            End If
+                            If discNo1 < 0 Then
+                                result = String.Compare(tags1(MetaDataIndex.DiscNo), tags2(MetaDataIndex.DiscNo), StringComparison.Ordinal)
+                                If result <> 0 Then
+                                    Return result
+                                End If
+                            End If
+                            Dim discNo2 As Integer
+                            If Not Integer.TryParse(tags2(MetaDataIndex.DiscNo), discNo2) Then
+                                discNo2 = -1
+                            End If
+                            If discNo2 < 0 AndAlso discNo1 >= 0 Then
+                                result = String.Compare(tags1(MetaDataIndex.DiscNo), tags2(MetaDataIndex.DiscNo), StringComparison.OrdinalIgnoreCase)
+                                If result <> 0 Then
+                                    Return result
+                                End If
+                            End If
+                            If discNo1 <> discNo2 Then
+                                Return discNo1 - discNo2
+                            End If
+                            Dim trackNo1 As Integer
+                            Dim trackNo2 As Integer
+                            If Not Integer.TryParse(tags1(MetaDataIndex.TrackNo), trackNo1) Then
+                                trackNo1 = -1
+                            End If
+                            If Not Integer.TryParse(tags2(MetaDataIndex.TrackNo), trackNo2) Then
+                                trackNo2 = -1
+                            End If
+                            If trackNo1 > 0 AndAlso trackNo2 > 0 Then
+                                Return trackNo1 - trackNo2
+                            End If
+                        If trackNo1 = trackNo2 Then
+                            If trackNo1 <> 0 Then
+                                Return 0
+                            Else
+                                Return String.Compare(tags1(MetaDataIndex.TrackNo), tags2(MetaDataIndex.TrackNo), StringComparison.Ordinal)
+                            End If
+                        ElseIf trackNo1 = 0 Then
+                            Return -1
+                        ElseIf trackNo2 = 0 Then
+                            Return 1
+                        Else
+                            Return If(trackNo1 < trackNo2, -1, 1)
+                        End If
+                    End If
+                End If
+            End Function
+        End Class  ' YearFileComparer
 
         Private NotInheritable Class TrackNameFileComparer
             Inherits Comparer(Of String())
