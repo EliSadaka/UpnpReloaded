@@ -1,12 +1,5 @@
-﻿Imports System.Text
-Imports System.IO
-Imports System.Drawing
-Imports System.Drawing.Drawing2D
-Imports System.Drawing.Imaging
+﻿Imports System.Runtime.InteropServices
 Imports System.Security
-Imports System.Runtime.InteropServices
-Imports System.Net
-Imports System.Net.Sockets
 
 Partial Public Class Plugin
     <SuppressUnmanagedCodeSecurity()> _
@@ -111,7 +104,7 @@ Partial Public Class Plugin
             Public origres As Integer
             Public plugin As Integer
             Public sample As Integer
-            Private filenamePtr As IntPtr
+            Private ReadOnly filenamePtr As IntPtr
         End Class  ' BASS_CHANNELINFO 
 
         <DllImport("bass.dll", CharSet:=CharSet.Auto)> _

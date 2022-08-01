@@ -1,13 +1,7 @@
-﻿Imports System.Text
-Imports System.IO
-Imports System.Drawing
+﻿Imports System.Drawing
 Imports System.Drawing.Drawing2D
-Imports System.Drawing.Imaging
-Imports System.Security
 Imports System.Runtime.InteropServices
-Imports System.Net
-Imports System.Net.Sockets
-Imports System.Threading
+Imports System.Security
 
 Partial Public Class Plugin
     Private MustInherit Class Encoder

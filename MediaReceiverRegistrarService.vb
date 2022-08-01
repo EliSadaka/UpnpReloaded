@@ -1,6 +1,4 @@
-﻿Imports System.Text
-
-Partial Public Class Plugin
+﻿Partial Public Class Plugin
     <UpnpServiceVariable("AuthorizationDeniedUpdateID", "ui4", True)> _
     <UpnpServiceVariable("A_ARG_TYPE_DeviceID", "string", False)> _
     <UpnpServiceVariable("A_ARG_TYPE_RegistrationRespMsg", "bin.base64", False)> _

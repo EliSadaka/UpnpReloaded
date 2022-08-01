@@ -1,10 +1,7 @@
-﻿Imports System.Text
-Imports System.Net
+﻿Imports System.Net
 Imports System.Net.Sockets
-Imports System.Threading
-Imports System.Xml
-Imports System.Threading.Tasks
 Imports System.Runtime.InteropServices
+Imports System.Threading
 
 Partial Public Class Plugin
     Private Delegate Sub HttpRouteDelegate(request As HttpRequest)

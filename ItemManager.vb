@@ -1,8 +1,6 @@
-﻿Imports System.Text
-Imports System.IO
-Imports System.Threading
+﻿Imports System.Collections.ObjectModel
+Imports System.Text
 Imports System.Xml
-Imports System.Collections.ObjectModel
 
 Partial Public Class Plugin
     Private Class ItemManager

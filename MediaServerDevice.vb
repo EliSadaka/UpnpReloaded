@@ -1,10 +1,7 @@
-﻿Imports System.Text
-Imports System.Xml
+﻿Imports System.Net
 Imports System.Runtime.InteropServices
-Imports System.Reflection
 Imports System.Threading
-Imports System.Net
-Imports System.Net.Sockets
+Imports System.Xml
 
 Partial Public Class Plugin
     Private NotInheritable Class MediaServerDevice

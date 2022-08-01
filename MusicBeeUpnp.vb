@@ -1,7 +1,7 @@
-﻿Imports System.Runtime.InteropServices
-Imports System.Net
+﻿Imports System.Net
 Imports System.Net.NetworkInformation
 Imports System.Net.Sockets
+Imports System.Runtime.InteropServices
 Imports System.Threading
 
 Public Class Plugin
@@ -15,12 +15,11 @@ Public Class Plugin
     Private Shared ReadOnly logLock As New Object
     Private Shared ReadOnly errorCount As New Dictionary(Of String, Integer)(StringComparer.Ordinal)
     Private Shared ReadOnly sendDataBarrier As New SemaphoreSlim(4)
-    Private Shared ignoreNamePrefixes() As String = New String() {}
-    Private Shared ignoreNameChars As String = Nothing
-    Private Shared playCountTriggerPercent As Double
-    Private Shared playCountTriggerSeconds As Integer
-    Private Shared skipCountTriggerPercent As Double
-    Private Shared skipCountTriggerSeconds As Integer
+    Private Shared ReadOnly ignoreNameChars As String = Nothing
+    Private Shared ReadOnly playCountTriggerPercent As Double
+    Private Shared ReadOnly playCountTriggerSeconds As Integer
+    Private Shared ReadOnly skipCountTriggerPercent As Double
+    Private Shared ReadOnly skipCountTriggerSeconds As Integer
     Private Shared logCounter As Integer = 0
     Private Shared hostAddresses() As IPAddress
     Private Shared subnetMasks()() As Byte

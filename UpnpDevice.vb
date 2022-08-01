@@ -1,8 +1,4 @@
 ﻿Imports System.Xml
-Imports System.Text
-Imports System.Runtime.Remoting.Messaging
-Imports System.Reflection
-Imports System.Globalization
 
 Partial Public Class Plugin
     Private MustInherit Class UpnpDevice

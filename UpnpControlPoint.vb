@@ -1,9 +1,6 @@
-﻿Imports System.Text
-Imports UPNPLib
-Imports System.Xml
-Imports System.IO
-Imports System.Net
+﻿Imports System.Net
 Imports System.Net.Sockets
+Imports UPNPLib
 
 Partial Public Class Plugin
     Private Class UpnpControlPoint

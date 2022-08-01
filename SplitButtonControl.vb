@@ -1,6 +1,6 @@
-﻿Imports System.Drawing
+﻿Imports System.ComponentModel
+Imports System.Drawing
 Imports System.Windows.Forms.VisualStyles
-Imports System.ComponentModel
 
 Partial Public Class Plugin
     Private NotInheritable Class SplitButton
@@ -12,7 +12,7 @@ Partial Public Class Plugin
         Private isSplitMenuVisible As Boolean
         Private isMouseEntered As Boolean
         Private splitMenuStrip As ContextMenuStrip
-        Private textFlags As TextFormatFlags = TextFormatFlags.Default
+        Private ReadOnly textFlags As TextFormatFlags = TextFormatFlags.Default
         Private Shared ReadOnly borderSize As Integer = SystemInformation.Border3DSize.Width * 2
 
         Public Sub New()

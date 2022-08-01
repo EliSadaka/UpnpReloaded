@@ -1,10 +1,9 @@
-﻿Imports System.Text
-Imports System.IO
+﻿Imports System.Net
+Imports System.Net.Sockets
+Imports System.Runtime.InteropServices
+Imports System.Text
 Imports System.Threading
 Imports System.Xml
-Imports System.Runtime.InteropServices
-Imports System.Net
-Imports System.Net.Sockets
 
 Partial Public Class Plugin
     Private Shared ReadOnly renderingDevices As New List(Of MediaRendererDevice)

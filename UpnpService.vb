@@ -1,8 +1,8 @@
-﻿Imports System.Text
-Imports System.Xml
-Imports System.IO
-Imports System.Reflection
+﻿Imports System.IO
 Imports System.Net
+Imports System.Reflection
+Imports System.Text
+Imports System.Xml
 
 Partial Public Class Plugin
     Private MustInherit Class UpnpService

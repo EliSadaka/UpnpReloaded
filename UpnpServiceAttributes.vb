@@ -1,13 +1,11 @@
-﻿Imports System.Text
-
-Partial Public Class Plugin
+﻿Partial Public Class Plugin
     <AttributeUsage(AttributeTargets.[Class], AllowMultiple:=True)> _
     Private NotInheritable Class UpnpServiceVariable
         Inherits Attribute
-        Private m_name As String
-        Private m_dataType As String
-        Private m_sendEvents As Boolean
-        Private m_allowedValue As String()
+        Private ReadOnly m_name As String
+        Private ReadOnly m_dataType As String
+        Private ReadOnly m_sendEvents As Boolean
+        Private ReadOnly m_allowedValue As String()
 
         Public Sub New(name As String, dataType As String, sendEvents As Boolean, ParamArray allowedValue As String())
             m_name = name
@@ -48,9 +46,9 @@ Partial Public Class Plugin
     <AttributeUsage(AttributeTargets.Parameter Or AttributeTargets.Method, AllowMultiple:=True)> _
     Private NotInheritable Class UpnpServiceArgument
         Inherits Attribute
-        Private m_index As Integer
-        Private m_name As String
-        Private m_relatedStateVariable As String
+        Private ReadOnly m_index As Integer
+        Private ReadOnly m_name As String
+        Private ReadOnly m_relatedStateVariable As String
 
         Public Sub New(index As Integer, name As String, relatedStateVariable As String)
             m_index = index

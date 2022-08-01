@@ -348,9 +348,9 @@ Partial Public Class Plugin
         MusicBeeStarted = 34
         PlayingTracksChanged = 35
         PlayingTracksQueueChanged = 36
-		PlaylistCreated = 37
-		PlaylistUpdated = 38
-		PlaylistDeleted = 39
+        PlaylistCreated = 37
+        PlaylistUpdated = 38
+        PlaylistDeleted = 39
     End Enum
 
     Public Enum CallbackType
@@ -524,7 +524,7 @@ Partial Public Class Plugin
         Archiving = 4
     End Enum
 
-    <Flags()> _
+    <Flags()>
     Public Enum LibraryCategory
         Music = 0
         Audiobook = 1
@@ -538,9 +538,9 @@ Partial Public Class Plugin
         AppleDevice = 2
         GooglePlay2 = 3
         AppleDevice2 = 4
-		WebDrivePluginOneDrive = 5
-		WebDrivePluginGoogleDrive = 6
-		WebDrivePluginDropBox = 7
+        WebDrivePluginOneDrive = 5
+        WebDrivePluginGoogleDrive = 6
+        WebDrivePluginDropBox = 7
     End Enum
 
     Public Enum DataType

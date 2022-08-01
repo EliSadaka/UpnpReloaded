@@ -1,9 +1,8 @@
-﻿Imports System.Text
-Imports System.Threading
+﻿Imports System.Net
 Imports System.Net.Sockets
-Imports System.Net
-Imports System.Net.NetworkInformation
 Imports System.Runtime.InteropServices
+Imports System.Text
+Imports System.Threading
 
 Partial Public Class Plugin
     Private Class SsdpServer

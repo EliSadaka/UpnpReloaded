@@ -1,5 +1,4 @@
-﻿Imports System.Text
-Imports System.Xml
+﻿Imports System.Xml
 
 Partial Public Class Plugin
     <UpnpServiceVariable("SourceProtocolInfo", "string", True)> _

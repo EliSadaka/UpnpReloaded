@@ -1,9 +1,5 @@
 ﻿Imports System.Text
 Imports System.Xml
-Imports System.IO
-Imports System.Net
-Imports System.Net.NetworkInformation
-Imports System.Net.Sockets
 
 Partial Public Class Plugin
     Private Class UpnpServer
