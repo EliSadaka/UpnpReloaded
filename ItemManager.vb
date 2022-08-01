@@ -14,6 +14,7 @@ Partial Public Class Plugin
         Private ReadOnly streamingProfile As StreamingProfile
         Private ReadOnly encodeSettings As New MediaSettings
         Private Shared musicFiles As List(Of String())
+        Private Shared podcastFiles As List(Of String())
         Private Shared radioFiles As List(Of String())
         Private Shared audiobookFiles As List(Of String())
         Private Shared inboxFiles As List(Of String())
@@ -25,6 +26,7 @@ Partial Public Class Plugin
         Private Shared fileLookupLoaded As Boolean = False
         Private Shared ReadOnly queryFields() As Plugin.MetaDataType = DirectCast(New Integer() {MetaDataType.Url, MetaDataType.Category, MetaDataType.Artist, MetaDataType.ArtistPeople, MetaDataType.AlbumArtist, MetaDataType.Composer, MetaDataType.Conductor, MetaDataType.TrackTitle, MetaDataType.Album, MetaDataType.TrackNo, MetaDataType.DiscNo, MetaDataType.DiscCount, MetaDataType.YearOnly, MetaDataType.Genre, MetaDataType.Publisher, MetaDataType.Rating, -MetaDataType.Duration, -MetaDataType.FileSize, -MetaDataType.Bitrate, -MetaDataType.SampleRate, -MetaDataType.Channels, -MetaDataType.DateAdded, -MetaDataType.PlayCount, -MetaDataType.DateLastPlayed, -MetaDataType.ReplayGainTrack, 0}, Plugin.MetaDataType())
         Private Shared ReadOnly musicCategory As String = mbApiInterface.MB_GetLocalisation("Main.tree.Music", "Music")
+        Private Shared ReadOnly podcastCategory As String = mbApiInterface.MB_GetLocalisation("Main.tree.Podcasts", "Podcasts")
         Private Shared ReadOnly radioCategory As String = mbApiInterface.MB_GetLocalisation("Main.tree.RaSt", "Radio")
         Private Shared ReadOnly audiobookCategory As String = mbApiInterface.MB_GetLocalisation("Main.tree.AuBo", "Audiobooks")
         Private Shared ReadOnly inboxCategory As String = mbApiInterface.MB_GetLocalisation("Main.tree.Inbox", "Inbox")
@@ -69,6 +71,9 @@ Partial Public Class Plugin
                     musicFiles = New List(Of String())
                     audiobookFiles = New List(Of String())
                     inboxFiles = New List(Of String())
+                    Dim podcastSubs() As String
+                    mbApiInterface.Podcasts_QuerySubscriptions("", podcastSubs)
+                    podcastFiles = New List(Of String())
                     Dim radioUrls() As String
                     mbApiInterface.Library_QueryFilesEx("domain=Radio", radioUrls)
                     radioFiles = New List(Of String())
@@ -80,6 +85,27 @@ Partial Public Class Plugin
                             audiobookFiles.Add(tags)
                         Else
                             musicFiles.Add(tags)
+                        End If
+                    Next index
+                    For index As Integer = 0 To podcastSubs.Length - 1
+                        Dim subscription() As String
+                        mbApiInterface.Podcasts_GetSubscription(podcastSubs(index), subscription)
+                        If subscription(SubscriptionMetaDataType.DounloadedCount) <> "0" Then
+                            Dim episodes() As String
+                            mbApiInterface.Podcasts_GetSubscriptionEpisodes(podcastSubs(index), episodes)
+                            For episodeIndex As Integer = 0 To episodes.Length - 1
+                                Dim episode() As String
+                                mbApiInterface.Podcasts_GetSubscriptionEpisode(subscription(SubscriptionMetaDataType.Id), episodeIndex, episode)
+                                If episode(EpisodeMetaDataType.IsDownloaded) = "True" Then
+                                    Dim tags() As String
+                                    mbApiInterface.Library_GetFileTags(episodes(episodeIndex), queryFields, tags)
+                                    Dim id As String = GetFileId(tags(MetaDataIndex.Url))
+                                    If Not fileLookup.ContainsKey(id) Then
+                                        fileLookup.Add(id, tags)
+                                    End If
+                                    podcastFiles.Add(tags)
+                                End If
+                            Next episodeIndex
                         End If
                     Next index
                     For index As Integer = 0 To radioUrls.Length - 1
@@ -97,6 +123,9 @@ Partial Public Class Plugin
                 If Not treeIsLoaded Then
                     treeIsLoaded = True
                     Dim musicTree As New TemplateNode("1", "0", "1", musicCategory, "object.container", Nothing)
+                    Dim podcastTree As New TemplateNode("114", "0", "114", podcastCategory, "object.container", New MetaDataIndex() {MetaDataIndex.Album}) With {
+                        .Category = ContainerCategory.Podcast
+                    }
                     Dim audiobooksTree As New TemplateNode("115", "0", "115", audiobookCategory, "object.container", Nothing) With {
                         .Category = ContainerCategory.Audiobook
                     }
@@ -136,8 +165,8 @@ Partial Public Class Plugin
                         .IncludeAllTracks = True
                     }
                     yearsTree.ChildNodes = New TemplateNode() {yearsAlbumsTree}
-                    template.ChildNodes = New TemplateNode() {musicTree, audiobooksTree, radioTree, inboxTree, playlistsTree}
-                    tree.Folders = New FolderNode() {New FolderNode(musicCategory), New FolderNode(audiobookCategory, audiobookFiles), New FolderNode(radioCategory, radioFiles), New FolderNode(inboxCategory, inboxFiles), If(streamingProfile.WmcCompatability, playlistRootWmcCompat, playlistRootStandard)}
+                    template.ChildNodes = New TemplateNode() {musicTree, podcastTree, audiobooksTree, radioTree, inboxTree, playlistsTree}
+                    tree.Folders = New FolderNode() {New FolderNode(musicCategory), New FolderNode(podcastCategory, podcastFiles), New FolderNode(audiobookCategory, audiobookFiles), New FolderNode(radioCategory, radioFiles), New FolderNode(inboxCategory, inboxFiles), If(streamingProfile.WmcCompatability, playlistRootWmcCompat, playlistRootStandard)}
                 End If
             End SyncLock
         End Sub
@@ -609,7 +638,7 @@ skipFile:
                         folder.ChildFiles.Sort(New AlbumFileComparer)
                         numberReturned = WriteAudioFilesDIDL(writer, hostUrl, filterSet, "object.item.audioItem.musicTrack", objectId, folder.ChildFiles, startingIndex, requestedCount).ToString()
                         totalMatches = folder.ChildFiles.Count.ToString()
-                    ElseIf lookupIdCount = 0 OrElse (node.Category = ContainerCategory.Playlist AndAlso lookupIdCount < 2) Then
+                    ElseIf lookupIdCount = 0 OrElse ((node.Category = ContainerCategory.Playlist OrElse node.Category = ContainerCategory.Podcast) AndAlso lookupIdCount < 2) Then
                         numberReturned = WriteContainerItemsDIDL(writer, filterSet, objectId, node, folder, startingIndex, requestedCount).ToString()
                         totalMatches = folder.Folders.Length.ToString()
                     Else
@@ -928,7 +957,9 @@ skipFile:
                     forcedCodec = streamingProfile.TranscodeCodec
                 End If
                 If forcedCodec = FileCodec.Pcm Then
-                    forcedCodec = If(Not IsCodecSupported(FileCodec.Wave) OrElse (IsCodecSupported(FileCodec.Pcm) AndAlso tags(MetaDataIndex.Size) = "0"), FileCodec.Pcm, FileCodec.Wave)
+                    If musicBeePlayToMode Then
+                        forcedCodec = If(Not IsCodecSupported(FileCodec.Wave) OrElse (IsCodecSupported(FileCodec.Pcm) AndAlso tags(MetaDataIndex.Size) = "0"), FileCodec.Pcm, FileCodec.Wave)
+                    End If
                 End If
                 'If musicBeePlayToMode Then
                 '    LogInformation("Item", "transcode=" & forceEncode & " to=" & forcedCodec.ToString() & ",rgmode=" & mbApiInterface.Player_GetReplayGainMode().ToString() & ",gain=" & (fileHasTrackGain OrElse fileHasAlbumGain) & ",eq/dsp=" & mbSoundEffectsActive & ",samplerate=" & sampleRate & ",dev min=" & streamingProfile.MinimumSampleRate & ",dev max=" & streamingProfile.MaximumSampleRate & ",chans=" & channelCount & ",dev stereo=" & streamingProfile.StereoOnly & ",codec=" & sourceFileCodec.ToString & ",sup=" & IsCodecSupported(sourceFileCodec) & ",bw=" & Settings.BandwidthConstrained)
@@ -1107,7 +1138,7 @@ skipFile:
                     End If
                     Dim encodeSampleRate As Integer = If(streamingProfile.TranscodeSampleRate = -1, sampleRate, streamingProfile.TranscodeSampleRate)
                     For Each encoder As AudioEncoder In encodeSettings.Audio.Encoders
-                        If (encoder.Codec = forcedCodec AndAlso (forcedCodec <> sourceFileCodec OrElse forceEncode)) OrElse ((forcedCodec = FileCodec.Unknown) AndAlso (((encoder.Codec = FileCodec.Pcm OrElse encoder.Codec = FileCodec.Wave) AndAlso Not Settings.BandwidthConstrained))) Then
+                        If (encoder.Codec = forcedCodec AndAlso (forcedCodec <> sourceFileCodec OrElse forceEncode)) OrElse (forcedCodec = FileCodec.Unknown AndAlso (((encoder.Codec = FileCodec.Pcm OrElse encoder.Codec = FileCodec.Wave) AndAlso Not Settings.BandwidthConstrained))) Then
                             writer.WriteStartElement("res")
                             writer.WriteAttributeString("protocolInfo", String.Format("http-get:*:{0}:{1}", GetMime(encoder.Codec, streamingProfile.TranscodeBitDepth), GetEncodeFeature(encoder.Codec, (duration.Ticks <= 0))))
                             Dim isPcmData As Boolean = (encoder.Codec = FileCodec.Pcm OrElse encoder.Codec = FileCodec.Wave)
@@ -1356,18 +1387,6 @@ skipFile:
         End Function
 
         Private Shared Function GetNameBucket(name As String) As Char
-startRemovePrefix:
-            If ignoreNameChars IsNot Nothing Then
-                Do While name.Length > 0 AndAlso ignoreNameChars.IndexOf(name.Chars(0)) <> -1
-                    name = name.Substring(1)
-                Loop
-            End If
-            For index As Integer = 0 To ignoreNamePrefixes.Length - 1
-                If name.StartsWith(ignoreNamePrefixes(index), StringComparison.OrdinalIgnoreCase) Then
-                    name = name.Substring(ignoreNamePrefixes(index).Length)
-                    GoTo startRemovePrefix
-                End If
-            Next index
             If name.Length = 0 Then
                 Return "#"c
             ElseIf Not Char.IsLetter(name.Chars(0)) Then
@@ -1460,35 +1479,6 @@ startRemovePrefix:
             Public Overrides Function Compare(node1 As FolderNode, node2 As FolderNode) As Integer
                 Dim name1Changed As Boolean = False
                 Dim name2Changed As Boolean = False
-startRemovePrefix:
-                If ignoreNameChars IsNot Nothing Then
-                    Do While node1.Name.Length > 0 AndAlso ignoreNameChars.IndexOf(node1.Name.Chars(0)) <> -1
-                        name1Changed = True
-                        node1.Name = node1.Name.Substring(1)
-                    Loop
-                    Do While node2.Name.Length > 0 AndAlso ignoreNameChars.IndexOf(node2.Name.Chars(0)) <> -1
-                        name2Changed = True
-                        node2.Name = node2.Name.Substring(1)
-                    Loop
-                End If
-                For index As Integer = 0 To ignoreNamePrefixes.Length - 1
-                    If node1.Name.StartsWith(ignoreNamePrefixes(index), StringComparison.OrdinalIgnoreCase) Then
-                        If String.Compare(node1.Name, "The The", StringComparison.Ordinal) = 0 Then
-                            Exit For
-                        End If
-                        name1Changed = True
-                        node1.Name = node1.Name.Substring(ignoreNamePrefixes(index).Length)
-                        GoTo startRemovePrefix
-                    End If
-                    If node2.Name.StartsWith(ignoreNamePrefixes(index), StringComparison.OrdinalIgnoreCase) Then
-                        If String.Compare(node2.Name, "The The", StringComparison.Ordinal) = 0 Then
-                            Exit For
-                        End If
-                        name2Changed = True
-                        node2.Name = node2.Name.Substring(ignoreNamePrefixes(index).Length)
-                        GoTo startRemovePrefix
-                    End If
-                Next index
                 Dim result As Integer = String.Compare(node1.Name, node2.Name, StringComparison.OrdinalIgnoreCase)
                 If result <> 0 OrElse Not (name1Changed Xor name2Changed) Then
                     Return result
